@@ -75,7 +75,7 @@ module.exports = function( grunt ) {
   }
 
 	function getViewFromModel( model ) {
-		var type = model.type;
+		var type = model.Type;
 
 		if ( type.indexOf( ':' ) ) {
 			return type.split( ':' )[ 1 ];
