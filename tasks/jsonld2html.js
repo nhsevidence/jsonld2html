@@ -14,7 +14,6 @@ module.exports = function( grunt ) {
     var done = this.async();
 
     var options = this.options( defaults );
-    options.model = this.target;
 
     var files = this.files.slice();
     var views = loadViews( options.views );
@@ -75,7 +74,7 @@ module.exports = function( grunt ) {
   }
 
 	function getViewFromModel( model ) {
-		var type = model.Type;
+		var type = model.Type.toLowerCase();
 
 		if ( type.indexOf( ':' ) ) {
 			return type.split( ':' )[ 1 ];
