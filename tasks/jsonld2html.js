@@ -78,7 +78,7 @@ module.exports = function( grunt ) {
   }
 
 	function getViewFromModel( model ) {
-		if ( !model.type ) {
+		if ( !model.type || model.type === '' ) {
 			throw new Error( 'Cannot determine model type please specify with grunt.options.view' );
 		}
 
