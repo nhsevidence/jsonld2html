@@ -49,7 +49,11 @@ module.exports = function( grunt ) {
   function renderWith( views, options ) {
     return function( doc ) {
       var model = getModelFromFramedDocument( doc );
-			var view = getViewFromModel( model );
+			var view = options.view || getViewFromModel( model );
+
+			if ( !views[ view ] ) {
+				throw new Error( 'Cannot locate view [ '+ view +' ] it is not in the path ' + options.views );
+			}
 
       grunt.verbose.writeln( 'Rendering with model:' );
       grunt.verbose.writeln( JSON.stringify( model, null, '  ' ) );
@@ -64,7 +68,7 @@ module.exports = function( grunt ) {
     var contextProperty = "@context";
 
     var model = doc[ graphProperty ] || doc;
-    model = model[ 0 ] || model;
+		if ( model.length === 1 ) model = model[ 0 ];
 
     if ( model[ contextProperty ] ) {
       delete model[ contextProperty ];
@@ -74,7 +78,11 @@ module.exports = function( grunt ) {
   }
 
 	function getViewFromModel( model ) {
-		var type = model.Type.toLowerCase();
+		if ( !model.type ) {
+			throw new Error( 'Cannot determine model type please specify with grunt.options.view' );
+		}
+
+		var type = model.type.toLowerCase();
 
 		if ( type.indexOf( ':' ) ) {
 			return type.split( ':' )[ 1 ];
@@ -100,7 +108,7 @@ module.exports = function( grunt ) {
   }
 
 	function toSafeModelPropertyName( key ) {
-	  return key.replace( /[:@]/gmi, ' ' ).replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function( match, index ) {
+	  return key.replace( /[_:@]/gmi, ' ' ).trim().replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function( match, index ) {
 	    if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
 	    return index == 0 ? match.toLowerCase() : match.toUpperCase();
 	  });
