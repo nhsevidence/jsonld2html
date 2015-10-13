@@ -5,7 +5,8 @@ var IRI = require('iri').IRI;
 var defaults = {
 	views: 			 './src/views/',
 	partials:    './src/views/partials',
-	wwwroot:     '/'
+	wwwroot:     '/',
+	map:				 function( m ) { return m; }
 };
 
 module.exports = function( grunt ) {
@@ -48,7 +49,7 @@ module.exports = function( grunt ) {
 
   function renderWith( views, options ) {
     return function( doc ) {
-      var model = getModelFromFramedDocument( doc );
+      var model = options.map( getModelFromFramedDocument( doc ) );
 			var view = options.view || getViewFromModel( model );
 
 			if ( !views[ view ] ) {
