@@ -75,7 +75,13 @@ module.exports = function( grunt ) {
       delete model[ contextProperty ];
     }
 
-    return clone( model );
+		console.log( JSON.stringify( model, null, '  ' ) );
+
+		var cloned = clone( model );
+
+		console.log( JSON.stringify( cloned, null, '  ' ) );
+
+    return cloned;
   }
 
 	function getViewFromModel( model ) {
@@ -97,15 +103,19 @@ module.exports = function( grunt ) {
 		return ext ? id.replace( ext, '' ) : id;
 	}
 
-  function clone( oldObj ) {
-    var newObj = oldObj;
-    if ( oldObj && typeof oldObj === 'object' ) {
-        newObj = Object.prototype.toString.call( oldObj ) === "[object Array]" ? [] : {};
-        for ( var i in oldObj ) {
-          newObj[ toSafeModelPropertyName( i ) ] = clone( oldObj[ i ] );
-        }
+  function clone( x ) {
+		if ( !x || typeof x !== 'object' ) return x;
+
+		if ( Object.prototype.toString.call( x ) === "[object Array]" ) {
+			return x.map(function( y ) { return clone( y ) });
+		}
+
+    var n =  {};
+    for ( var y in x ) {
+      n[ toSafeModelPropertyName( y ) ] = clone( x[ y ] );
     }
-    return newObj;
+
+    return n;
   }
 
 	function toSafeModelPropertyName( key ) {
