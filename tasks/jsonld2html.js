@@ -75,13 +75,7 @@ module.exports = function( grunt ) {
       delete model[ contextProperty ];
     }
 
-		console.log( JSON.stringify( model, null, '  ' ) );
-
-		var cloned = clone( model );
-
-		console.log( JSON.stringify( cloned, null, '  ' ) );
-
-    return cloned;
+    return clone( model );
   }
 
 	function getViewFromModel( model ) {
@@ -91,9 +85,8 @@ module.exports = function( grunt ) {
 
 		var type = model.type.toLowerCase();
 
-		if ( type.indexOf( ':' ) ) {
-			return type.split( ':' )[ 1 ];
-		}
+		if ( ~type.indexOf( ':' ) ) return type.split( ':' )[ 1 ];
+		if ( !~type.indexOf( '/' ) ) return type;
 
 		var iri = new IRI( type );
 		var id = iri.fragment();
