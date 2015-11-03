@@ -7,6 +7,9 @@ var defaults = {
 	partials:    './src/views/partials',
 	wwwroot:     '/',
 	map:				 function( m ) { return m; }
+	helpers:		 {
+
+	}
 };
 
 module.exports = function( grunt ) {
@@ -19,6 +22,14 @@ module.exports = function( grunt ) {
     var files = this.files.slice();
     var views = loadViews( options.views );
     var partials = loadPartials( options.partials );
+
+		if ( options.helpers ) {
+			for (var helper in options.helpers) {
+		    if (options.helpers.hasOwnProperty( helper )) {
+		      Handlebars.registerHelper( helper, options.helpers[ helper ] );
+		    }
+		  }
+		}
 
     process();
 
