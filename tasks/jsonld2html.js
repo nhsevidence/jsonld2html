@@ -6,10 +6,8 @@ var defaults = {
 	views: 			 './src/views/',
 	partials:    './src/views/partials',
 	wwwroot:     '/',
-	map:				 function( m ) { return m; }
-	helpers:		 {
-
-	}
+	map:				 function( m ) { return m; },
+	helpers:		 { }
 };
 
 module.exports = function( grunt ) {
@@ -72,7 +70,7 @@ module.exports = function( grunt ) {
       grunt.verbose.writeln();
 
       return views[ view ]( model );
-    }
+    };
   }
 
   function getModelFromFramedDocument( doc ) {
@@ -111,7 +109,7 @@ module.exports = function( grunt ) {
 		if ( !x || typeof x !== 'object' ) return x;
 
 		if ( Object.prototype.toString.call( x ) === "[object Array]" ) {
-			return x.map(function( y ) { return clone( y ) });
+			return x.map(function( y ) { return clone( y ); });
 		}
 
     var n =  {};
@@ -125,7 +123,7 @@ module.exports = function( grunt ) {
 	function toSafeModelPropertyName( key ) {
 	  return key.replace( /[_:@]/gmi, ' ' ).trim().replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function( match, index ) {
 	    if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-	    return index == 0 ? match.toLowerCase() : match.toUpperCase();
+	    return index === 0 ? match.toLowerCase() : match.toUpperCase();
 	  });
 	}
 
