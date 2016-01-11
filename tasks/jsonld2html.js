@@ -39,13 +39,10 @@ module.exports = function( grunt ) {
 
       var file = files.pop();
 
-      grunt.log.writeln( "Loading " + file.src[0] + "...");
       var content = grunt.file.read(file.src[0], { encoding: 'utf8' });
-
       var html = renderWith( views, options )( JSON.parse( content ) );
 
       grunt.file.write( file.dest, html );
-      grunt.log.ok( "Output written to " + file.dest );
 
       process();
     }
