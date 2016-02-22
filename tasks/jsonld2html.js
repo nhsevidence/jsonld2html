@@ -13,7 +13,7 @@ var defaults = {
 
 module.exports = (grunt) => {
 
-  grunt.registerMultiTask('jsonld2html', 'Renders RDF data using framed contexts and templated views', () => {
+  grunt.registerMultiTask('jsonld2html', 'Renders RDF data using framed contexts and templated views', function () {
     var done = this.async();
 
     var options = this.options(defaults);
