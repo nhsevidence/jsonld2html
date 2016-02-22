@@ -3,36 +3,37 @@ var Handlebars = require('handlebars');
 var IRI = require('iri').IRI;
 
 var defaults = {
-	views: 			 './src/views/',
-	partials:    './src/views/partials',
-	wwwroot:     '/',
-	map:				 function( m ) { return m; },
-	helpers:		 { }
+  views: './src/views/',
+  partials: './src/views/partials',
+  wwwroot: '/',
+  map: (m) => m,
+  helpers: { },
+  metadata: { },
 };
 
-module.exports = function( grunt ) {
+module.exports = (grunt) => {
 
-  grunt.registerMultiTask( 'jsonld2html', 'Renders RDF data using framed contexts and templated views', function() {
+  grunt.registerMultiTask('jsonld2html', 'Renders RDF data using framed contexts and templated views', () => {
     var done = this.async();
 
-    var options = this.options( defaults );
+    var options = this.options(defaults);
 
     var files = this.files.slice();
-    var views = loadViews( options.views );
-    var partials = loadPartials( options.partials );
+    var views = loadViews(options.views);
+    var partials = loadPartials(options.partials);
 
-		if ( options.helpers ) {
-			for (var helper in options.helpers) {
-		    if (options.helpers.hasOwnProperty( helper )) {
-		      Handlebars.registerHelper( helper, options.helpers[ helper ] );
-		    }
-		  }
-		}
+    if (options.helpers) {
+      for (var helper in options.helpers) {
+        if (options.helpers.hasOwnProperty(helper)) {
+          Handlebars.registerHelper(helper, options.helpers[helper]);
+        }
+      }
+    }
 
     process();
 
     function process() {
-      if ( files.length <= 0 ) {
+      if (files.length <= 0) {
         done();
         return;
       }
@@ -40,48 +41,47 @@ module.exports = function( grunt ) {
       var file = files.pop();
 
       var content = grunt.file.read(file.src[0], { encoding: 'utf8' });
-      var html = renderWith( views, options )( JSON.parse( content ) );
+      var html = renderWith(views, options)(JSON.parse(content));
 
-      grunt.file.write( file.dest, html );
+      grunt.file.write(file.dest, html);
 
       process();
     }
   });
 
-
-
-
   // helper methods
 
-  function renderWith( views, options ) {
-    return function( doc ) {
-      var model = options.map( getModelFromFramedDocument( doc ) );
-			var view = options.view || getViewFromModel( model );
+  function renderWith(views, options) {
+    return (doc) => {
+      var model = options.map(getModelFromFramedDocument(doc));
+      var view = options.view || getViewFromModel(model);
 
-			if ( !views[ view ] ) {
-				throw new Error( 'Cannot locate view [ '+ view +' ] it is not in the path ' + options.views );
-			}
+      if (!views[view]) {
+        throw new Error('Cannot locate view [ ' + view + ' ] it is not in the path ' + options.views);
+      }
 
-      grunt.verbose.writeln( 'Rendering with model:' );
-      grunt.verbose.writeln( JSON.stringify( model, null, '  ' ) );
+      model.metadata = clone(options.metadata || {});
+
+      grunt.verbose.writeln('Rendering with model:');
+      grunt.verbose.writeln(JSON.stringify(model, null, '  '));
       grunt.verbose.writeln();
 
-      return views[ view ]( model );
+      return views[view](model);
     };
   }
 
-  function getModelFromFramedDocument( doc ) {
-    var graphProperty = "@graph";
-    var contextProperty = "@context";
+  function getModelFromFramedDocument(doc) {
+    var graphProperty = '@graph';
+    var contextProperty = '@context';
 
-    var model = doc[ graphProperty ] || doc;
-		if ( model.length === 1 ) model = model[ 0 ];
+    var model = doc[graphProperty] || doc;
+    if (model.length === 1) model = model[0];
 
-    if ( model[ contextProperty ] ) {
-      delete model[ contextProperty ];
+    if (model[contextProperty]) {
+      delete model[contextProperty];
     }
 
-    return clone( model );
+    return clone(model);
   }
 
 	function getViewFromModel( model ) {
