@@ -79,7 +79,7 @@ See documentation [in the Grunt Docs](http://gruntjs.com/configuring-tasks#globb
 ##### Skipping Files
 
 ```js
-// Deletes all .js files, but skips min.js files
+// Process all .json files, but skips index.json file
 jsonld2html: {
   models: {
     src: ["path/to/dir/*.json", "!path/to/dir/index.json"]
